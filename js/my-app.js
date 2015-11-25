@@ -34,6 +34,9 @@ $$('.ac-1').on('click', function () {
             onClick: function () {
             localStorage.clear();
             $$("#profiletrigger").prop('href', 'loginpage.html');
+            myApp.alert('Successfully Logged Out','FitnessTime', function () {
+      mainView.goBack();
+    });
             }
         }
     ];
@@ -63,6 +66,72 @@ var mySwiper = myApp.swiper('.swiper-container', {
     pagination:'.swiper-pagination'
   });
   });
+    myApp.onPageInit('register', function (page) {
+    	
+    	$('.gym-member').on('click', function fireMemberID() {
+if ($('.gym-member').prop( "checked" ) == true) {
+	console.log("true");
+	$('div .item-content.member-id').css("display", "flex");
+  
+}
+else if ($('.gym-member').prop( "checked" ) == false) {
+	$('div .item-content.member-id').hide();
+	console.log("false");
+}
+});
+
+$$('.form-to-json').on('click', function(){
+  var formData = myApp.formToJSON('#my-form');
+  alert(JSON.stringify(formData));
+  var jsonText = JSON.stringify(formData);
+
+  registerUser();
+}); 
+
+function registerUser() {
+    AWS.config.update({
+        accessKeyId: "AKIAJXIPNX5ZILPIM35A",
+        secretAccessKey: "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"
+    });
+    
+AWS.config.region = 'us-west-2';
+
+var table = "fitness_users";
+var key = 'userID';
+
+// Write the item to the table
+
+var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
+var name = $( "input[name=name]" ).val();
+var password = $( "input[name=password]" ).val();
+var email = $( "input[name=email]" ).val();
+var birthdate = $( "input[name=birthdate]" ).val();
+var memberid= $( "input[name=memberid]" ).val();
+
+var params = {
+    TableName:table,
+    Item:{
+    	"userID":key,
+        "name": name,
+        "password": password,
+        "email": email,
+        "birthdate": birthdate,
+        "memberid": memberid
+    }
+};
+
+console.log("Adding a new item...");
+dynamodbDoc.put(params, function(err, data) {
+    if (err) {
+        console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+        console.log("Added item:", JSON.stringify(data, null, 2));
+    }
+});
+ 
+  };
+  });
+  
 
   myApp.onPageInit('loginpage', function (page) {
 

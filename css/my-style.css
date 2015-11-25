@@ -3,7 +3,17 @@ left: auto !important;
 margin-left: auto;
 margin-right: auto;
 }
+.item-content.member-id {
+    display: none;
+}
 
+.center-submit{
+    margin: 0 auto;
+   }
+.list-block{
+    margin: 60px 0;
+    font-size: 17px;
+}
 #loginButton {
 text-align: center;
 position: relative;
@@ -475,29 +485,20 @@ overflow:visible;
   background-color: #ED1C24;
 }
 
-.settings-button:before, .settings-button:after {
-  content: "";
-}
+
 
 .settings-button:before {
   position: absolute;
   top: 8px;
-  transition: top .3s ease-out;
+      content: "";
 }
 
 .settings-button:after {
   position: absolute;
   top: -8px;
-  transition: top .3s ease-out;
+      content: "";
 }
 
-.dots:hover .settings-button:before {
-  top: 0;
-}
-
-.dots:hover .settings-button:after {
-  top: -0;
-}
 .list-block .item-link.list-button {
 line-height: 25px;
 }

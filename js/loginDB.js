@@ -1,5 +1,5 @@
 
-(function() {
+(function registerUser() {
     AWS.config.update({
         accessKeyId: "AKIAJXIPNX5ZILPIM35A",
         secretAccessKey: "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"
@@ -34,4 +34,4 @@ dynamodbDoc.put(params, function(err, data) {
     }
 });
  
-  })();
+  });
