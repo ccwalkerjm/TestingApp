@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>FitnessTime</title>
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="css/framework7.min.css">
+      <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/my-app.css">
+    <link rel="stylesheet" href="css/my-style.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+  </head>
+  <body>
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+      <div class="content-block">
+        <menuprofile>
+	<ul>
+      <li><a href="index.html" class="close-panel homeico">Home</a></li>
+       <li><a href="events.html" class="close-panel eventsico">Events</a></li>
+       <li><a href="classes.html" class="close-panel classesico">Classes</a></li>
+       <li><a href="dietcenter.html" class="close-panel dietico">Diet Center</a></li>
+       <li><a href="#" id="profiletrigger" class="close-panel profileico">Profile</a></li>
+		  <li><a href="about.html" class="close-panel aboutico">About us</a></li>		  
+	</ul>
+</menuprofile>
+      </div>
+    </div>
+    <!-- Views-->
+    <div class="views">
+      <!-- Your main view, should have "view-main" class-->
+      <div class="view view-main">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without left link-->
+            <div class="center sliding"><div class="baricon"></div>FitnessTime</div>
+            <div class="left">
+             <a href="#" class="dots ac-1"><div class="settings-button"></div></a>
+            </div>
+            <div class="right">
+              <!-- Right link contains only icon - additional "icon-only" class--><a data-panel="left" class="navicon-button x open-panel"><div class="navicon"></div></a>
+            </div>
+          </div>
+        </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, data-page contains page name-->
+          <div data-page="index" class="page">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+              <div class="content-block-title">Welcome To FitnessTime</div>
+              <div class="content-block">
+                <div class="content-block-inner">
+                  <p>Couple of worlds here because my app is so awesome!</p>    
+                  <p>Duis sed erat ac eros ultrices pharetra id ut tellus. Praesent rhoncus enim ornare ipsum aliquet ultricies. Pellentesque sodales erat quis elementum sagittis.</p>
+                </div>
+              </div>
+          <div class="pricing-wrapper clearfix">
+		<div class="pricing-table">
+			<h3 class="pricing-title">Silver Pass</h3>
+
+			<ul class="table-list">
+				<li>Special Program</li>
+				<li>1 Personal Training Session</li>
+				<li>BCA</li>
+				
+			<div class="table-buy price">
+				<a href="#" class="pricing-action">Choose</a>
+  <p class="silver">100,000<sup>L.L</sup></p>
+			</div>
+		</div>
+		<div class="pricing-table recommended">
+			<h3 class="pricing-title">Golden Pass</h3>
+			<ul class="table-list">
+				<li>Special Program</li>
+				<li>4 Personal Training Sessions</li>
+				<li>Special Diet</li>
+			<div class="table-buy price">
+				<a href="#" class="pricing-action">Choose</a>
+  <p class="silver">180,000<sup>L.L</sup></p>
+			</div>
+		</div>
+
+		<div class="pricing-table">
+			<h3 class="pricing-title2">Platinum Pass</h3>
+			<ul class="table-list">
+				<li>Specific Diet</li>
+				<li>12 Personal Training Sessions</li>
+		<li>Special Program</li>
+			<div class="table-buy">
+				<a href="#" class="pricing-action">Choose</a>
+  <p class="silver">525,000<sup>L.L</sup></p>
+			</div>
+		</div>
+	</div>
+
+            </div>
+          </div>
+        </div>
+        
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="js/framework7.min.js"></script>
+    <!-- Path to your app js-->]
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="js/modernizer.min.js"></script>
+    <script type="text/javascript" src="js/my-app.js"></script>
+  </body>
+</html>
