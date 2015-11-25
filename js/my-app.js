@@ -81,55 +81,44 @@ else if ($('.gym-member').prop( "checked" ) == false) {
 });
 
 $$('.form-to-json').on('click', function(){
-  var formData = myApp.formToJSON('#my-form');
-  alert(JSON.stringify(formData));
-  var jsonText = JSON.stringify(formData);
 
   registerUser();
 }); 
+var creds = new AWS.Credentials({
+  RoleArn: 'arn:aws:iam::710983978180:role/dynamodb', accessKeyId: 'AKIAJ7GE5M52PMLG5QTQ', secretAccessKey: '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'
+});
 
-function registerUser() {
     AWS.config.update({
-        accessKeyId: "AKIAJXIPNX5ZILPIM35A",
-        secretAccessKey: "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"
-    });
-    
-AWS.config.region = 'us-west-2';
-
-var table = "fitness_users";
-var key = 'userID';
-
-// Write the item to the table
-
-var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
-var name = $( "input[name=name]" ).val();
-var password = $( "input[name=password]" ).val();
-var email = $( "input[name=email]" ).val();
-var birthdate = $( "input[name=birthdate]" ).val();
-var memberid= $( "input[name=memberid]" ).val();
+    	accessKeyId: 'AKIAJ7GE5M52PMLG5QTQ',
+    	secretAccessKey: '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',
+  region: "us-west-2"
+  });
+  var dynamodb = new AWS.DynamoDB();
 
 var params = {
-    TableName:table,
-    Item:{
-    	"userID":key,
-        "name": name,
-        "password": password,
-        "email": email,
-        "birthdate": birthdate,
-        "memberid": memberid
+    TableName : "fitness_users",
+    KeySchema: [       
+        { AttributeName: "useremail", KeyType: "HASH"},  //Partition key
+        { AttributeName: "password", KeyType: "RANGE" }  //Sort key
+    ],
+    AttributeDefinitions: [       
+        { AttributeName: "useremail", AttributeType: "S" },
+        { AttributeName: "password", AttributeType: "S" }
+    ],
+    ProvisionedThroughput: {       
+        ReadCapacityUnits: 3, 
+        WriteCapacityUnits: 3
     }
 };
 
-console.log("Adding a new item...");
-dynamodbDoc.put(params, function(err, data) {
+dynamodb.createTable(params, function(err, data) {
     if (err) {
-        console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+        console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
     } else {
-        console.log("Added item:", JSON.stringify(data, null, 2));
+        console.log("Created table. Table description JSON:", JSON.stringify(data, null, 2));
     }
 });
- 
-  };
+
   });
   
 
