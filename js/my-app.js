@@ -84,43 +84,43 @@ $$('.form-to-json').on('click', function(){
 
   registerUser();
 }); 
-var creds = new AWS.Credentials({
-  RoleArn: 'arn:aws:iam::710983978180:role/dynamodb', accessKeyId: 'AKIAJ7GE5M52PMLG5QTQ', secretAccessKey: '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'
-});
-
-    AWS.config.update({
+  function registerUser(){
+AWS.config.update({
     	accessKeyId: 'AKIAJ7GE5M52PMLG5QTQ',
     	secretAccessKey: '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',
   region: "us-west-2"
   });
-  var dynamodb = new AWS.DynamoDB();
+var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
+  var table = "fitness_users";
+
+var useremail = $("input[name='email']").val();
+var password = $("input[name='password']").val();
+var shahash = $.sha256('password');
+var name = $("input[name='name']").val();
+var memberid = $("input[name='memberid']").val();
+var birthdate = $("input[name='birthdate']").val();
 
 var params = {
-    TableName : "fitness_users",
-    KeySchema: [       
-        { AttributeName: "useremail", KeyType: "HASH"},  //Partition key
-        { AttributeName: "password", KeyType: "RANGE" }  //Sort key
-    ],
-    AttributeDefinitions: [       
-        { AttributeName: "useremail", AttributeType: "S" },
-        { AttributeName: "password", AttributeType: "S" }
-    ],
-    ProvisionedThroughput: {       
-        ReadCapacityUnits: 3, 
-        WriteCapacityUnits: 3
+    TableName:table,
+    Item:{
+        "useremail": useremail,
+        "password": shahash,
+        "name": name ,
+        "birthdate": birthdate,
+        "memberID": memberid,
     }
 };
-
-dynamodb.createTable(params, function(err, data) {
+  console.log("Adding a new item...");
+dynamodbDoc.put(params, function(err, data) {
     if (err) {
-        console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
+        console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
-        console.log("Created table. Table description JSON:", JSON.stringify(data, null, 2));
+        console.log("Added item:", JSON.stringify(data, null, 2));
     }
 });
 
-  });
-  
+}
+  }); 
 
   myApp.onPageInit('loginpage', function (page) {
 
