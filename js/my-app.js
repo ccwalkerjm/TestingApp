@@ -88,8 +88,8 @@ if ($("input[name='email']").val() != "" && $("input[name='password']").val() !=
 }); 
   function registerUser(){
 AWS.config.update({
-    	accessKeyId: 'AKIAJ7GE5M52PMLG5QTQ',
-    	secretAccessKey: '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',
+    	accessKeyId: 'aws access id',
+    	secretAccessKey: 'aws secret key',
   region: "us-west-2"
   });
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
