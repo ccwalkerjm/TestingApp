@@ -124,6 +124,15 @@ dynamodbDoc.put(params, function(err, data) {
 
 
 myApp.onPageInit('loginaws', function (page) {
+	
+	$$('#loginButton').on('click', function(){
+	veriefyUser();
+	});
+	function veriefyUser(){
+	
+	var userName = $("input[name='username']").val();
+var passWord = $("input[name='password']").val();
+
 	var apigClient = apigClientFactory.newClient({
     apiKey: '9MG65fI2j99RkOr9AHzND3OcI0ofRzWM3MxDU6vJ'
 });
@@ -133,8 +142,8 @@ var params = {
 
 };
 var body = {
-    useremail: 'test@hotmail.com',
-        password: 'bb1476'
+    useremail: userName,
+        password: passWord
 };
 var additionalParams = {
   // If there are any unmodeled query parameters or headers that must be 
@@ -150,6 +159,7 @@ apigClient.authLambdaPost(params, body, additionalParams)
     }).catch( function(result){
          alert('failed');
     });
+    }
   });
   
   myApp.onPageInit('loginpage', function (page) {
