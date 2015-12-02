@@ -77,21 +77,25 @@ else if ($('.gym-member').prop( "checked" ) == false) {
 	$('div .item-content.member-id').addClass("show-memberid");
 }
 });
+ 
+AWS.config.region = 'us-east-1'; // Region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'us-east-1:590028b9-2e47-4112-88ad-90c6c77b6e60',
+});
 
+   AWS.config.credentials.get(function(){
 
+   var syncClient = new AWS.CognitoSyncManager();
+
+   syncClient.openOrCreateDataset('myDataset', function(err, dataset) {
+
+      dataset.put('myKey', 'myValue', function(err, record){
+
+         dataset.synchronize({
+
+            onSuccess: function (data, newRecords) {
 
 $$('.form-to-json').on('click', function(){
-$("#my-form").validate();
-if ($("input[name='email']").val() != "" && $("input[name='password']").val() != "" && $("input[name='name']").val()!="" && $("input[name='birthdate']").val() !="" ){
-  registerUser();
- }
-}); 
-  function registerUser(){
-AWS.config.update({
-    	accessKeyId: 'aws access id',
-    	secretAccessKey: 'aws secret key',
-  region: "us-west-2"
-  });
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
   var table = "fitness_users";
 
@@ -122,12 +126,23 @@ dynamodbDoc.put(params, function(err, data) {
         console.log("Added item:", JSON.stringify(data, null, 2));
         alert("Registration complete! You can now login and view your profile.")
     }
+ }); 
+}); 
+}
+        
+
+         });
+
+      });
+     
+   });
 });
 
-}
+
+
+ 
+
   }); 
-
-
 myApp.onPageInit('loginaws', function (page) {
 	 var pageContainer = $$(page.container);
 if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
