@@ -122,6 +122,36 @@ dynamodbDoc.put(params, function(err, data) {
 }
   }); 
 
+
+myApp.onPageInit('loginaws', function (page) {
+	var apigClient = apigClientFactory.newClient({
+    apiKey: '9MG65fI2j99RkOr9AHzND3OcI0ofRzWM3MxDU6vJ'
+});
+var params = {
+  // This is where any modeled request parameters should be added. 
+  // The key is the parameter name, as it is defined in the API in API Gateway.
+
+};
+var body = {
+    useremail: 'test@hotmail.com',
+        password: 'bb1476'
+};
+var additionalParams = {
+  // If there are any unmodeled query parameters or headers that must be 
+  //   sent with the request, add them here.
+  headers: {
+  },
+  queryParams: {
+  }
+};
+apigClient.authLambdaPost(params, body, additionalParams)
+    .then(function(result){
+        alert('success');
+    }).catch( function(result){
+         alert('failed');
+    });
+  });
+  
   myApp.onPageInit('loginpage', function (page) {
 
  var pageContainer = $$(page.container);
