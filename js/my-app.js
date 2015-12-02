@@ -17,7 +17,7 @@ $$("#profiletrigger").prop('href', 'profile.html');
 
 }
 else{
-	$$("#profiletrigger").prop('href', 'loginpage.html');
+	$$("#profiletrigger").prop('href', 'loginaws.html');
 }
 } else {
   // no native support for HTML5 storage :(
@@ -33,7 +33,7 @@ $$('.ac-1').on('click', function () {
             text: 'Sign out',
             onClick: function () {
             localStorage.clear();
-            $$("#profiletrigger").prop('href', 'loginpage.html');
+            $$("#profiletrigger").prop('href', 'loginaws.html');
             myApp.alert('Successfully Logged Out','FitnessTime', function () {
       mainView.goBack();
     });
@@ -67,22 +67,24 @@ var mySwiper = myApp.swiper('.swiper-container', {
   });
   });
     myApp.onPageInit('register', function (page) {
-    	
+    	$('.gym-member').attr('checked', true);
     	$('.gym-member').on('click', function fireMemberID() {
 if ($('.gym-member').prop( "checked" ) == true) {
-	console.log("true");
-	$('div .item-content.member-id').css("display", "flex");
+	$('div .item-content.member-id').removeClass("show-memberid");
   
 }
 else if ($('.gym-member').prop( "checked" ) == false) {
-	$('div .item-content.member-id').hide();
-	console.log("false");
+	$('div .item-content.member-id').addClass("show-memberid");
 }
 });
 
-$$('.form-to-json').on('click', function(){
 
+
+$$('.form-to-json').on('click', function(){
+$("#my-form").validate();
+if ($("input[name='email']").val() != "" && $("input[name='password']").val() != "" && $("input[name='name']").val()!="" && $("input[name='birthdate']").val() !="" ){
   registerUser();
+ }
 }); 
   function registerUser(){
 AWS.config.update({
@@ -97,7 +99,7 @@ var useremail = $("input[name='email']").val();
 var password = $("input[name='password']").val();
 var shahash = $.sha256('password');
 var name = $("input[name='name']").val();
-var memberid = $("input[name='memberid']").val();
+var memberid = $("input[name='memberid']").val() + "0";
 var birthdate = $("input[name='birthdate']").val();
 
 var params = {
@@ -114,8 +116,11 @@ var params = {
 dynamodbDoc.put(params, function(err, data) {
     if (err) {
         console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+        alert("One or more input values were invalid/empty.");
+        
     } else {
         console.log("Added item:", JSON.stringify(data, null, 2));
+        alert("Registration complete! You can now login and view your profile.")
     }
 });
 
@@ -124,6 +129,11 @@ dynamodbDoc.put(params, function(err, data) {
 
 
 myApp.onPageInit('loginaws', function (page) {
+	 var pageContainer = $$(page.container);
+if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
+	console.log("LocalStorageIsActive");
+mainView.router.load('profile.html'); 
+}
 	
 	$$('#loginButton').on('click', function(){
 	veriefyUser();
@@ -132,7 +142,7 @@ myApp.onPageInit('loginaws', function (page) {
 	
 	var userName = $("input[name='username']").val();
 var passWord = $("input[name='password']").val();
-
+var hashPassword = $.sha256('passWord');
 	var apigClient = apigClientFactory.newClient({
     apiKey: '9MG65fI2j99RkOr9AHzND3OcI0ofRzWM3MxDU6vJ'
 });
@@ -143,7 +153,7 @@ var params = {
 };
 var body = {
     useremail: userName,
-        password: passWord
+        password: hashPassword
 };
 var additionalParams = {
   // If there are any unmodeled query parameters or headers that must be 
@@ -155,64 +165,19 @@ var additionalParams = {
 };
 apigClient.authLambdaPost(params, body, additionalParams)
     .then(function(result){
-        alert('success');
+        alert('Login Successful! We are still building the profile page please come back later');
+        mainView.router.loadPage('profile.html');     
+        
     }).catch( function(result){
-         alert('failed');
+         alert('Login Failed');
+         
     });
     }
-  });
-  
-  myApp.onPageInit('loginpage', function (page) {
-
- var pageContainer = $$(page.container);
-if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
-	console.log("LocalStorageIsActive");
-mainView.router.load('profile.html'); 
-}
-
-  pageContainer.find('.list-button').on('click', function fireLogin() {
-    var username = pageContainer.find('input[name="username"]').val();      // read username input
-    var password = pageContainer.find('input[name="password"]').val();      // read password input
-     username = username.replace(/[^\w\s]/gi, '');    // sanitizing username input
-     $('input[name="username"]').val(username);
-
-$$("#loginbutton").attr("disabled","disabled");
-if(username != '' && password != '') {
-	var apikey =  "MAQFMSFD29RG4R1LM48K";                 // defining apikey which is stored on the remote server
-	var url = "http://www.fitnesstime-lb.org/testrest/post/user/login?username="+username+"&password="+password+"&api_key="+apikey;
-	$$.post(url, function (json) {                    //using post method to parse json result and remote server is set to ignore GET request
-var checkstatus = json[11] + json[12];                // this will return ok only if login is correct otherwise it's ko
-var checkusername = [];                                // array to store useful json response
-var prePopulate = $.parseJSON(json);
-$.each(prePopulate, function(idx2,val2) {              // parsing json response into a fine array
-	var str = idx2 + ":" + val2;
-	checkusername.push(str);
-});
-
-if (checkstatus == "ok" && checkusername[2] == "username:"+username){ //comparing to check if status return is ok and username return matahces
-window.localStorage["username"] = username;                                    // store username in localstorage
-window.localStorage["password"] = password;                                    // store password in localstorage
-mainView.router.loadPage('profile.html');                                 // will navigate user to protected page
-}
-else{
-	myApp.alert("Username and/or Password do not match. Please try again.",'FitnessTime', function() {});      
-}
-});
-
-}
-else {
-   
-	myApp.alert("Please enter username and password", 'FitnessTime', function() {});           // if username or password left empty
-}
-return false;
-});
-	
-  	 myApp.onPageInit('profile', function (page) {
+      myApp.onPageInit('profile', function (page) {
 var username = window.localStorage["username"];
 $('.usertitle').text("Welcome "+username);
-  });
+  }); 	 
 
-  		
-          });
+  });
 
   

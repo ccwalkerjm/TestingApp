@@ -17,7 +17,7 @@
         <div class="item-inner">
           <div class="item-title label">Name</div>
           <div class="item-input">
-            <input type="text" name="name" placeholder="Your name" required>
+            <input type="text" name="name"  minlength="2" placeholder="Your name" required>
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@
         <div class="item-inner">
           <div class="item-title label">Password</div>
           <div class="item-input">
-            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="password" minlength="6" placeholder="Password" required>
           </div>
         </div>
       </div>
@@ -87,12 +87,13 @@
     </li>
    
   </ul>
-  </form>
-  	<div class="row">
+  <div class="row">
   <div class="col-50 center-submit">
-  <a href="#" class="button form-to-json">Submit</a>
+  	<input data-role="submit" type="submit" class="button form-to-json button-big button-fill button-raised color-red" value="Submit">
   </div>
   </div>
+  </form>
+  
 
 </div>
 </div>

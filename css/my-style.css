@@ -4,9 +4,21 @@ margin-left: auto;
 margin-right: auto;
 }
 .item-content.member-id {
-    display: none;
+    display: flex;
 }
-
+.show-memberid
+{
+display: none !important;
+}
+.error {
+    color: red;
+}
+.form-to-json {
+    margin-top: 30px;
+}
+.label-switch input[type=checkbox]:checked+.checkbox{
+	    background: #FF3B30;
+}
 .center-submit{
     margin: 0 auto;
    }
@@ -478,24 +490,30 @@ overflow:visible;
 
 .settings-button, .settings-button:before, .settings-button:after {
   position: absolute;
-  right: 0;
+      right: 9px;
+    top: 16px;
   width: 5px;
   height: 5px;
   border-radius: 5px;
   background-color: #ED1C24;
 }
 
-
+a.dots.ac-1 {
+    width: 30px;
+    height: 35px;
+}
 
 .settings-button:before {
   position: absolute;
-  top: 8px;
+  top: 10px;
+    right: 0px;
       content: "";
 }
 
 .settings-button:after {
   position: absolute;
-  top: -8px;
+  top: -9px;
+    right: 0px;
       content: "";
 }
 
