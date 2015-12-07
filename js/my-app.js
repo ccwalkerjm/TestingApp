@@ -235,7 +235,7 @@ lock.parseHash(window.location.hash, function (profile, id_token, access_token, 
 console.log("lock");
 var userProfile;
 
-$('.btn-login').click(function(e) {
+$('.a0-next').click(function(e) {
   e.preventDefault();
   lock.show(function(err, profile, token) {
     if (err) {
