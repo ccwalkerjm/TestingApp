@@ -221,20 +221,22 @@ $('.usertitle').text("Welcome "+username);
 myApp.onPageInit('auth0', function (page) {
 
 var lock = null;
-$(document).ready(function() {
-   lock = new Auth0Lock('ZuLnECOVSXL7TXLtJhIEzuIx92joRwlZ', 'bmzapps.auth0.com');
+
+	console.log("i'm running");
+   lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
     lock.show({
         closable: false
       });
 lock.parseHash(window.location.hash, function (profile, id_token, access_token, state) {
         $('#userinfo').text(JSON.stringify(profile, 0, 2));
-      });
-      
+     
+
 });
 console.log("lock");
 var userProfile;
 
-$('.a0-next').click(function(e) {
+$('button.a0-primary.a0-next').click(function(e) {
+	
   e.preventDefault();
   lock.show(function(err, profile, token) {
     if (err) {
@@ -249,7 +251,8 @@ $('.a0-next').click(function(e) {
       // Save the profile
       userProfile = profile;
     }
-  });
+
+});
 });
 
 $.ajaxSetup({
