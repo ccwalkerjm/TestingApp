@@ -1,7 +1,10 @@
 // Initialize your app
 var myApp = new Framework7({
-    swipePanel: 'left',   
+    swipePanel: 'left', 
+    
+      
 });
+
 // Export selectors engine
 var $$ = Dom7;
 
@@ -32,6 +35,9 @@ $$('.ac-1').on('click', function () {
         {
             text: 'Sign out',
             onClick: function () {
+            	localStorage.removeItem('token');
+userProfile = null;
+window.location.href = "/";
             localStorage.clear();
             $$("#profiletrigger").prop('href', 'loginaws.html');
             myApp.alert('Successfully Logged Out','FitnessTime', function () {
@@ -78,24 +84,46 @@ else if ($('.gym-member').prop( "checked" ) == false) {
 }
 });
  
-AWS.config.region = 'us-east-1'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-east-1:590028b9-2e47-4112-88ad-90c6c77b6e60',
+var params = {
+    AccountId: '710983978180', // AWS account Id
+    RoleArn: 'arn:aws:iam::710983978180:role/lambda_dynamo', // IAM role that will be used by authentication
+    IdentityPoolId: 'us-east-1:590028b9-2e47-4112-88ad-90c6c77b6e60', //ID of the identity pool
+    Logins: {
+        'accounts.google.com': '11269715807-3nqm3eib7s1ehvvbuglgd0s9k7rf4ml6.apps.googleusercontent.com' //Token given by Amazon
+        }
+};
+     
+//Initialize the Credentials object
+AWS.config.credentials = new AWS.CognitoIdentityCredentials(params);
+ 
+//Call to Amazon Cognito, get the credentials for our user
+AWS.config.credentials.get(function(err,data) {
+    if (err) {
+        console.log("Error: "+err);
+        return;
+    }
+    console.log("Cognito Identity Id: " + AWS.config.credentials.identityId);
+});
+cognitosync = new AWS.CognitoSync();
+
+cognitosync.listRecords({
+    DatasetName: COGNITO_DATASET_NAME, //Name of the dataset 
+    IdentityId: COGNITO_IDENTITY_ID, //Cognito ID of the user
+    IdentityPoolId: COGNITO_IDENTITY_POOL_ID //Cognito identity pool ID
+}, function(err, data) {
+    if ( !err ) {
+        //Store dataset metadata and SyncSessionToken in the user’s session 
+        //for subsequent calls to the API where it is required.
+        req.user.COGNITO_SYNC_TOKEN = data.SyncSessionToken;
+        req.user.COGNITO_SYNC_COUNT = data.DatasetSyncCount;
+ 
+        //Retrieve information on the dataset
+        var dataRecords = JSON.stringify(data.Records);
+    }
 });
 
-   AWS.config.credentials.get(function(){
 
-   var syncClient = new AWS.CognitoSyncManager();
 
-   syncClient.openOrCreateDataset('myDataset', function(err, dataset) {
-
-      dataset.put('myKey', 'myValue', function(err, record){
-
-         dataset.synchronize({
-
-            onSuccess: function (data, newRecords) {
-
-$$('.form-to-json').on('click', function(){
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
   var table = "fitness_users";
 
@@ -124,21 +152,17 @@ dynamodbDoc.put(params, function(err, data) {
         
     } else {
         console.log("Added item:", JSON.stringify(data, null, 2));
-        alert("Registration complete! You can now login and view your profile.")
+        alert("Registration complete! You can now login and view your profile.");
     }
  }); 
-}); 
-}
-        
-
-         });
-
-      });
-     
-   });
-});
-
-
+    
+    
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/client:plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+ 
 
  
 
@@ -195,4 +219,47 @@ $('.usertitle').text("Welcome "+username);
 
   });
 
-  
+myApp.onPageInit('auth0', function (page) {
+
+var lock = null;
+$(document).ready(function() {
+   lock = new Auth0Lock('ZuLnECOVSXL7TXLtJhIEzuIx92joRwlZ', 'bmzapps.auth0.com');
+    lock.show({
+        closable: false
+      });
+lock.parseHash(window.location.hash, function (profile, id_token, access_token, state) {
+        $('#userinfo').text(JSON.stringify(profile, 0, 2));
+      });
+      
+});
+console.log("lock");
+var userProfile;
+
+$('.btn-login').click(function(e) {
+  e.preventDefault();
+  lock.show(function(err, profile, token) {
+    if (err) {
+      // Error callback
+      alert('There was an error');
+    } else {
+      // Success callback
+
+      // Save the JWT token.
+      localStorage.setItem('userToken', token);
+
+      // Save the profile
+      userProfile = profile;
+    }
+  });
+});
+
+$.ajaxSetup({
+  'beforeSend': function(xhr) {
+    if (localStorage.getItem('userToken')) {
+      xhr.setRequestHeader('Authorization',
+            'Bearer ' + localStorage.getItem('userToken'));
+    }
+  }
+});
+ 
+  }); 
