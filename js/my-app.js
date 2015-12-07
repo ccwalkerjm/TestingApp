@@ -4,7 +4,7 @@ var myApp = new Framework7({
     
       
 });
-
+StatusBar.hide();
 // Export selectors engine
 var $$ = Dom7;
 
