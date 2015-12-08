@@ -226,20 +226,29 @@ $('.usertitle').text("Welcome "+username);
 myApp.onPageInit('auth0', function (page) {
 
 var lock = null;
+store.set('path', window.location.pathname);
 
-	console.log("i'm running");
    lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
+   var hash = lock.parseHash();
+      if (hash) {
+        if (hash.error) {
+          alert("There was an error logging in");
+        } else {
+          lock.getProfile(hash.id_token, function (err, profile) {
+            store.set('profile', JSON.stringify(profile));
+            store.set('id_token', hash.id_token);
+
+          location.href = 'profile.html';
+          });
+        }
+      }
+      
     lock.show({
         closable: false,
-        callbackURL: 'file:///data/data/com.fitnesstime_lb.FitnessTime/files/downloads/app_dir/index.html'
+         responseType: 'token',
+         callbackURL: window.location.protocol + "//" + window.location.host + "profile.html"
       });
-lock.parseHash(window.location.hash, function (profile, id_token, access_token, state) {
-        $('#userinfo').text(JSON.stringify(profile, 0, 2));
-        console.log("hash is running");
-     
 
-});
-console.log("lock");
 var userProfile;
 
 $('button.a0-primary.a0-next').click(function(e) {
