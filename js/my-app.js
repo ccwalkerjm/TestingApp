@@ -231,7 +231,7 @@ var lock = null;
    lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
     lock.show({
         closable: false,
-        callbackURL: '../profile.html'
+        callbackURL: 'file:///data/data/com.fitnesstime_lb.FitnessTime/files/downloads/app_dir/index.html'
       });
 lock.parseHash(window.location.hash, function (profile, id_token, access_token, state) {
         $('#userinfo').text(JSON.stringify(profile, 0, 2));
@@ -292,7 +292,4 @@ $.ajaxSetup({
  
   }); 
   
-    myApp.onPageInit('profile', function (page) {
-      	var url = window.location.href;
-      	alert(url);
-  }); 
+ 

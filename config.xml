@@ -44,7 +44,7 @@
     -->
 
     <!-- Plugins -->
-     <plugin name="com.auth0.sdk" src="pgb"/>
+
     <!-- Core plugins -->
     <gap:plugin name="org.apache.cordova.console" />
     <gap:plugin name="org.apache.cordova.device" />
