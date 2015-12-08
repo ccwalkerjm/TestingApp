@@ -291,3 +291,8 @@ $.ajaxSetup({
 
  
   }); 
+  
+    myApp.onPageInit('profile', function (page) {
+      	var url = window.location.href;
+      	alert(url);
+  }); 
