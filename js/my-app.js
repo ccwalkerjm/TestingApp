@@ -229,29 +229,17 @@ var lock = null;
 store.set('path', window.location.pathname);
 
    lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
-   var hash = lock.parseHash();
-      if (hash) {
-        if (hash.error) {
-          alert("There was an error logging in");
-        } else {
-          lock.getProfile(hash.id_token, function (err, profile) {
-            store.set('profile', JSON.stringify(profile));
-            store.set('id_token', hash.id_token);
-
-          location.href = 'profile.html';
-          });
-        }
-      }
-      
+ 
     lock.show({
         closable: false,
          responseType: 'token',
-         callbackURL: window.location.protocol + "//" + window.location.host + "profile.html"
+         callbackURL: 'https://s3-us-west-2.amazonaws.com/testappfitness/profile.html'
       });
+
 
 var userProfile;
 
-$('button.a0-primary.a0-next').click(function(e) {
+$('.btn-login').click(function(e) {
 	console.log("you clicked me");
   e.preventDefault();
   lock.show(function(err, profile, token) {
@@ -300,5 +288,10 @@ $.ajaxSetup({
 
  
   }); 
-  
- 
+  myApp.onPageInit('profile', function (page) {
+  	
+  	$$('.test-button').on('click', function () {
+  		var url      = window.location.href;
+  		alert(url);
+   }); 
+      }); 
