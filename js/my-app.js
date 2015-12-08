@@ -4,6 +4,7 @@ var myApp = new Framework7({
     
       
 });
+
 // Export selectors engine
 var $$ = Dom7;
 
@@ -12,6 +13,8 @@ var mainView = myApp.addView('.view-main', {
     // Because we use fixed-through navbar we can enable dynamic navbar
     dynamicNavbar: true
 });
+
+
 if (Modernizr.localstorage) {
   // window.localStorage is available!
   if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
@@ -229,6 +232,7 @@ var lock = null;
       });
 lock.parseHash(window.location.hash, function (profile, id_token, access_token, state) {
         $('#userinfo').text(JSON.stringify(profile, 0, 2));
+        console.log("hash is running");
      
 
 });
@@ -236,7 +240,7 @@ console.log("lock");
 var userProfile;
 
 $('button.a0-primary.a0-next').click(function(e) {
-	
+	console.log("you clicked me");
   e.preventDefault();
   lock.show(function(err, profile, token) {
     if (err) {
@@ -244,13 +248,30 @@ $('button.a0-primary.a0-next').click(function(e) {
       alert('There was an error');
     } else {
       // Success callback
-
+ alert('login succes');
       // Save the JWT token.
       localStorage.setItem('userToken', token);
-
+ alert(profile);
       // Save the profile
       userProfile = profile;
     }
+    
+    $.ajax({
+    type: "POST",
+    url: "https://bmzapps.auth0.com/delegation",
+    // The key needs to match your method's input parameter (case-sensitive).
+    data: JSON.stringify({ "client_id": "3FpYC7YilWG7nCwduKkfwAbtckCWqV6W","grant_type":"urn:ietf:params:oauth:grant-type:jwt-bearer","id_token":token,"target": "3FpYC7YilWG7nCwduKkfwAbtckCWqV6W",
+    "api_type":"aws","role": "arn:aws:iam::710983978180:role/auth0-role","principal": "arn:aws:iam::710983978180:saml-provider/Auth0-fitnesstime"}),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function(data){alert(data);},
+    failure: function(errMsg) {
+        alert(errMsg);
+    }
+}); 
+    
+
+
 
 });
 });
@@ -258,10 +279,12 @@ $('button.a0-primary.a0-next').click(function(e) {
 $.ajaxSetup({
   'beforeSend': function(xhr) {
     if (localStorage.getItem('userToken')) {
+    	console.log("usertoken already stored");
       xhr.setRequestHeader('Authorization',
             'Bearer ' + localStorage.getItem('userToken'));
     }
   }
 });
+
  
   }); 
