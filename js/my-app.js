@@ -1,27 +1,27 @@
 // Initialize your app
 var myApp = new Framework7({
-    swipePanel: 'left', 
-    
-      
+    swipePanel: 'left',    
 });
-
-                      
+                    
 // Export selectors engine
 var $$ = Dom7;
 
- 
+ $$('.profile-auth').on('click', function () {
+  		 if (localStorage.getItem('userToken')) {
+      mainView.router.loadPage('profile.html');
+    }		
+  		 });
+  		 
 // Add view
 var mainView = myApp.addView('.view-main', {
     // Because we use fixed-through navbar we can enable dynamic navbar
     dynamicNavbar: true
 });
 
-
 if (Modernizr.localstorage) {
   // window.localStorage is available!
   if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
 $$("#profiletrigger").prop('href', 'profile.html');
-
 }
 else{
 	$$("#profiletrigger").prop('href', 'loginaws.html');
@@ -30,7 +30,23 @@ else{
   // no native support for HTML5 storage :(
   // maybe try dojox.storage or a third-party solution
 }
-$$('.ac-1').on('click', function () {
+
+$$('.panel-left').on('open', function () {
+  $$('.navicon-button').addClass('open');
+});
+$$('.panel-left').on('close', function () {
+    $$('.navicon-button').removeClass('open');
+});
+
+myApp.onPageInit('index', function (page) {
+  	$$('.profile-auth').on('click', function () {
+  		 if (localStorage.getItem('userToken')) {
+      mainView.router.loadPage('profile.html');
+    }
+  		
+  		
+  		 });
+    $$('.ac-1').on('click', function () {
 	 
     var buttons1 = [
         {
@@ -41,7 +57,7 @@ $$('.ac-1').on('click', function () {
             text: 'Sign out',
             onClick: function () {
             	localStorage.removeItem('token');
-userProfile = null;
+        userProfile = null;
 
             localStorage.clear();
             $$("#profiletrigger").prop('href', 'loginaws.html');
@@ -60,28 +76,23 @@ userProfile = null;
     var groups = [buttons1, buttons2];
     myApp.actions(groups);
 });
-
-$$('.panel-left').on('open', function () {
-  $$('.navicon-button').addClass('open');
-});
-$$('.panel-left').on('close', function () {
-    $$('.navicon-button').removeClass('open');
-});
+  		 	
+  });	
 myApp.onPageInit('photo2gallery', function (page) {
-var mySwiper = myApp.swiper('.swiper-container', {
+   var mySwiper = myApp.swiper('.swiper-container', {
     pagination:'.swiper-pagination'
   });
   });
-  myApp.onPageInit('photo1gallery', function (page) {
-var mySwiper = myApp.swiper('.swiper-container', {
+myApp.onPageInit('photo1gallery', function (page) {
+   var mySwiper = myApp.swiper('.swiper-container', {
     pagination:'.swiper-pagination'
   });
   });
-    myApp.onPageInit('register', function (page) {
+myApp.onPageInit('register', function (page) {
     	$('.gym-member').attr('checked', true);
     	$('.gym-member').on('click', function fireMemberID() {
 if ($('.gym-member').prop( "checked" ) == true) {
-	$('div .item-content.member-id').removeClass("show-memberid");
+	  $('div .item-content.member-id').removeClass("show-memberid");
   
 }
 else if ($('.gym-member').prop( "checked" ) == false) {
@@ -235,55 +246,25 @@ var showme = localStorage.getItem('userToken');
 console.log(showme);
 
  if (localStorage.getItem('userToken')) {
- 	var lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
- 	lock.show({},function(err, profile, token) {
-    if (err) {
-      // Error callback
-      alert('There was an error');
-    } else {
-      // Success callback
-      
-      
       mainView.router.loadPage('profile.html');
-      // Save the JWT token.
-      localStorage.setItem('userToken', token);
-      // Save the profile
-      userProfile = profile;
     }
-    
-
-}); 
- }
  else {
 var lock = null;
 
    lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
- 
 
-
-
-
-
-  
-    
   lock.show({},function(err, profile, token) {
     if (err) {
       // Error callback
       alert('There was an error');
     } else {
       // Success callback
-      
-      
       mainView.router.loadPage('profile.html');
       // Save the JWT token.
       localStorage.setItem('userToken', token);
       // Save the profile
       userProfile = profile;
     }
-    
-
 });
-
-}
- 
+} 
   }); 
