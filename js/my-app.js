@@ -91,7 +91,7 @@ myApp.onPageInit('photo1gallery', function (page) {
 myApp.onPageInit('register', function (page) {
     	$('.gym-member').attr('checked', true);
     	$('.gym-member').on('click', function fireMemberID() {
-if ($('.gym-member').prop( "checked" ) == true) {
+   if ($('.gym-member').prop( "checked" ) == true) {
 	  $('div .item-content.member-id').removeClass("show-memberid");
   
 }
@@ -99,19 +99,17 @@ else if ($('.gym-member').prop( "checked" ) == false) {
 	$('div .item-content.member-id').addClass("show-memberid");
 }
 });
- 
+ $$('.form-to-json').on('click', function () {
 var params = {
     AccountId: '710983978180', // AWS account Id
-    RoleArn: 'arn:aws:iam::710983978180:role/lambda_dynamo', // IAM role that will be used by authentication
+    RoleArn: 'arn:aws:iam::710983978180:role/Cognito_FitnessTimeIPUnauth_Role', // IAM role that will be used by authentication
     IdentityPoolId: 'us-east-1:590028b9-2e47-4112-88ad-90c6c77b6e60', //ID of the identity pool
-    Logins: {
-        'accounts.google.com': '11269715807-3nqm3eib7s1ehvvbuglgd0s9k7rf4ml6.apps.googleusercontent.com' //Token given by Amazon
-        }
+
 };
      
 //Initialize the Credentials object
 AWS.config.credentials = new AWS.CognitoIdentityCredentials(params);
- 
+ AWS.config.region = 'us-east-1';
 //Call to Amazon Cognito, get the credentials for our user
 AWS.config.credentials.get(function(err,data) {
     if (err) {
@@ -123,9 +121,9 @@ AWS.config.credentials.get(function(err,data) {
 cognitosync = new AWS.CognitoSync();
 
 cognitosync.listRecords({
-    DatasetName: COGNITO_DATASET_NAME, //Name of the dataset 
-    IdentityId: COGNITO_IDENTITY_ID, //Cognito ID of the user
-    IdentityPoolId: COGNITO_IDENTITY_POOL_ID //Cognito identity pool ID
+    DatasetName: "COGNITO_DATASET_NAME", //Name of the dataset 
+    IdentityId: AWS.config.credentials.identityId, //Cognito ID of the user
+    IdentityPoolId: 'us-east-1:590028b9-2e47-4112-88ad-90c6c77b6e60' //Cognito identity pool ID
 }, function(err, data) {
     if ( !err ) {
         //Store dataset metadata and SyncSessionToken in the user’s session 
@@ -161,6 +159,7 @@ var params = {
     }
 };
   console.log("Adding a new item...");
+  
 dynamodbDoc.put(params, function(err, data) {
     if (err) {
         console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
@@ -171,17 +170,8 @@ dynamodbDoc.put(params, function(err, data) {
         alert("Registration complete! You can now login and view your profile.");
     }
  }); 
+    });  
     
-    
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/client:plusone.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
- 
-
- 
-
   }); 
 myApp.onPageInit('loginaws', function (page) {
 	 var pageContainer = $$(page.container);
@@ -236,10 +226,7 @@ $('.usertitle').text("Welcome "+username);
   });
 var showme = localStorage.getItem('userToken');
 console.log(showme);
-
- 
- 
- 	
+	
 myApp.onPageInit('auth0', function (page) {
 var userProfile;
 var showme = localStorage.getItem('userToken');
