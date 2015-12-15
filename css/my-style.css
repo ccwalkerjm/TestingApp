@@ -1,4 +1,6 @@
-
+.logged-in{
+	display:none;
+}
 .navbar .center{
 left: auto !important;
 margin-left: auto;
@@ -6,10 +8,6 @@ margin-right: auto;
 }
 .item-content.member-id {
     display: flex;
-}
-.show-memberid
-{
-display: none !important;
 }
 .error {
     color: red;
@@ -178,7 +176,7 @@ white-space: nowrap;
 text-overflow: ellipsis;
 font-size: 14px;
 text-transform: uppercase;
-line-height: 1;
+line-height: 1px;
 color: #6d6d72;
 margin: 35px 15px 10px;
 }

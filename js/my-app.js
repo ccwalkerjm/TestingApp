@@ -5,9 +5,11 @@ var myApp = new Framework7({
       
 });
 
+                      
 // Export selectors engine
 var $$ = Dom7;
 
+ 
 // Add view
 var mainView = myApp.addView('.view-main', {
     // Because we use fixed-through navbar we can enable dynamic navbar
@@ -29,6 +31,7 @@ else{
   // maybe try dojox.storage or a third-party solution
 }
 $$('.ac-1').on('click', function () {
+	 
     var buttons1 = [
         {
             text: 'Settings',
@@ -39,11 +42,11 @@ $$('.ac-1').on('click', function () {
             onClick: function () {
             	localStorage.removeItem('token');
 userProfile = null;
-window.location.href = "/";
+
             localStorage.clear();
             $$("#profiletrigger").prop('href', 'loginaws.html');
             myApp.alert('Successfully Logged Out','FitnessTime', function () {
-      mainView.goBack();
+      mainView.router.load('index');
     });
             }
         }
@@ -215,83 +218,72 @@ apigClient.authLambdaPost(params, body, additionalParams)
     });
     }
       myApp.onPageInit('profile', function (page) {
-      	var url = window.location.href;
-      	alert(url);
 var username = window.localStorage["username"];
 $('.usertitle').text("Welcome "+username);
   }); 	 
 
   });
+var showme = localStorage.getItem('userToken');
+console.log(showme);
 
-myApp.onPageInit('auth0', function (page) {
-
-var lock = null;
-store.set('path', window.location.pathname);
-
-   lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
  
-    lock.show({
-        closable: false,
-         responseType: 'token',
-         callbackURL: 'https://s3-us-west-2.amazonaws.com/testappfitness/profile.html'
-      });
-
-
+ 
+ 	
+myApp.onPageInit('auth0', function (page) {
 var userProfile;
+var showme = localStorage.getItem('userToken');
+console.log(showme);
 
-$('.btn-login').click(function(e) {
-	console.log("you clicked me");
-  e.preventDefault();
-  lock.show(function(err, profile, token) {
+ if (localStorage.getItem('userToken')) {
+ 	var lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
+ 	lock.show({},function(err, profile, token) {
     if (err) {
       // Error callback
       alert('There was an error');
     } else {
       // Success callback
- alert('login succes');
+      
+      
+      mainView.router.loadPage('profile.html');
       // Save the JWT token.
       localStorage.setItem('userToken', token);
- alert(profile);
       // Save the profile
       userProfile = profile;
     }
     
-    $.ajax({
-    type: "POST",
-    url: "https://bmzapps.auth0.com/delegation",
-    // The key needs to match your method's input parameter (case-sensitive).
-    data: JSON.stringify({ "client_id": "3FpYC7YilWG7nCwduKkfwAbtckCWqV6W","grant_type":"urn:ietf:params:oauth:grant-type:jwt-bearer","id_token":token,"target": "3FpYC7YilWG7nCwduKkfwAbtckCWqV6W",
-    "api_type":"aws","role": "arn:aws:iam::710983978180:role/auth0-role","principal": "arn:aws:iam::710983978180:saml-provider/Auth0-fitnesstime"}),
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    success: function(data){alert(data);},
-    failure: function(errMsg) {
-        alert(errMsg);
-    }
+
 }); 
+ }
+ else {
+var lock = null;
+
+   lock = new Auth0Lock('3FpYC7YilWG7nCwduKkfwAbtckCWqV6W', 'bmzapps.auth0.com');
+ 
+
+
+
+
+
+  
+    
+  lock.show({},function(err, profile, token) {
+    if (err) {
+      // Error callback
+      alert('There was an error');
+    } else {
+      // Success callback
+      
+      
+      mainView.router.loadPage('profile.html');
+      // Save the JWT token.
+      localStorage.setItem('userToken', token);
+      // Save the profile
+      userProfile = profile;
+    }
     
 
-
-
-});
 });
 
-$.ajaxSetup({
-  'beforeSend': function(xhr) {
-    if (localStorage.getItem('userToken')) {
-    	console.log("usertoken already stored");
-      xhr.setRequestHeader('Authorization',
-            'Bearer ' + localStorage.getItem('userToken'));
-    }
-  }
-});
-
+}
  
   }); 
-  myApp.onPageInit('profile', function (page) {
-  	
-  	$$('.test-button').on('click', function () {
-  		var url      = window.location.href;
-  		alert(url);
-   }); 
-      }); 
